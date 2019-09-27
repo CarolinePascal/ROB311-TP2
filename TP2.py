@@ -2,43 +2,74 @@ import numpy as np
 import matplotlib.pyplot as plt
 import copy as copy
 
-def rms(U,V):
-    return(np.sqrt(np.dot(U-V,(U-V).T)))
+def rmse(U,V):
+    """
+    @brief Computes the root mean square error between two utility vectors
+    
+    @param U : np array (n), the first utility vector
+    @param V : np array (n), the second utility vector
+    
+    @return double : Returns the computed error
+    """
+    return np.sqrt(np.dot(U-V,(U-V).T)/len(U))
 
 def value_iteration(R,g,x,y):
+    """
+    @brief Implements the value iteration method to compute the optima utility and policy
+    
+    @param R : np array (4), the static rewerd vector 
+    @param x : double, problem parameter x
+    @param y : double, problem parameter y
+    @param y : double, the discount factor gamma 
+    
+    @return void : Displays the optima utility and policy results
+    """
+
+    #Initializing arrays and error value
     V = copy.deepcopy(R)
-    P = []  #For policies (a1 or a2) monitoring
-
+    P = [] 
     error = 1e5
-    print(V)
 
+    #Main loop
     while(error >= 1e-5):
 
+        #Utility iteration
         U = copy.deepcopy(V)
 
+        #Utility computation
         V[0] = R[0] + g*np.max([U[1],U[2]])
-
-        #Policies monitoring
-        if(U[1] == U[2]):
-            P.append(0)
-        elif(U[1] > U[2]):
-            P.append(1)
-        else:
-            P.append(2)
-
-        V[1] = R[1] + g*((1-x)*U[1] + x*U[2])
+        V[1] = R[1] + g*((1-x)*U[1] + x*U[3])
         V[2] = R[2] + g*((1-y)*U[0] + y*U[3])
         V[3] = R[3] + g*U[0]
 
-        error = rms(U,V)
+        #Policy monitoring
+        if(U[1] == U[2]):
+            P.append('both')
+        elif(U[1] > U[2]):
+            P.append('a1')
+        else:
+            P.append('a2')
 
-        print(V)
+        #Error computation
+        error = rmse(U,V)
+    
+    #Display the results !
+    print("The optimal utility is : \n U*0 = " + str(V[0]) + "\n U*1 = " + str(V[1]) + "\n U*2 = " + str(V[2]) + "\n U*3 = " + str(V[3]))
+    print("The optimal policy for the choice in state S0 is P*0 = " + P)
 
-    return(V,P)
+    return
         
+#Reward vector
 R = np.array([0.,0.,1.,10.])
-V,P = value_iteration(R,0.5,0.5,0.5)
-print(P)
+
+#Parameters
+x = 0.25
+y = 0.25
+g = 0.9
+
+value_iteration(R,g,x,y)
+
+
 
 
 
