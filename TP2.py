@@ -54,8 +54,8 @@ def value_iteration(R,g,x,y):
         error = rmse(U,V)
     
     #Display the results !
-    print("The optimal utility is : \n U*0 = " + str(V[0]) + "\n U*1 = " + str(V[1]) + "\n U*2 = " + str(V[2]) + "\n U*3 = " + str(V[3]))
-    print("The optimal policy for the choice in state S0 is P*0 = " + P)
+    print("The optimal utility is : \n V*0 = " + str(V[0]) + "\n V*1 = " + str(V[1]) + "\n V*2 = " + str(V[2]) + "\n V*3 = " + str(V[3]))
+    print("The optimal policy for the choice in state S0 is P*0 = " + P[-1])
 
     return
         
